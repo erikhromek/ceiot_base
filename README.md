@@ -442,3 +442,4 @@ Sería conveniente quitar de main.c cualquier elemento variable para no afectar 
 
 Renombrar esp32 a esp32-dht11 
 
+Prueba de modificación de Erik!
