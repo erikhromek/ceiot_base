@@ -43,7 +43,7 @@ const PORT = 8080;
 
 app.post('/measurement', function (req, res) {
 -       console.log("device id    : " + req.body.id + " key         : " + req.body.key + " temperature : " + req.body.t + " humidity    : " + req.body.h);	
-    const {insertedId} = insertMeasurement({id:req.body.id, t:req.body.t, h:req.body.h});
+    const {insertedId} = insertMeasurement({id:req.body.id, t:req.body.t, h:req.body.h, datetime: new Date()});
 	res.send("received measurement into " +  insertedId);
 });
 
