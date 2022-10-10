@@ -26,7 +26,7 @@
 #include "../config.h"
 
 /* HTTP constants that aren't configurable in menuconfig */
-#define WEB_PATH "/measurement_json"
+#define WEB_PATH "/measurement.json"
 
 static const char *TAG = "temp_collector";
 
