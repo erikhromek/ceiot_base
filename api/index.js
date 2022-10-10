@@ -35,6 +35,7 @@ async function getMeasurements() {
 const app = express();
 
 app.use(bodyParser.urlencoded({extended:false}));
+app.use(express.json());
 
 app.use(express.static('spa'));
 app.use('/js', express.static('spa'));
@@ -48,7 +49,7 @@ app.post('/measurement', function (req, res) {
 });
 
 app.post('/measurement.json', function (req, res) {
-    const data = JSON.parse(req.body);
+    const data = req.body;
     console.log(data);	
     const {insertedId} = insertMeasurement({key: data.key, id:data.id, t:data.t, h:data.h, datetime: new Date()});
     res.send("received json measurement into " +  insertedId);
