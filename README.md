@@ -76,7 +76,6 @@ Si en lugar de Ubuntu 22.04 se está instalando Ubuntu 22.04.x, pueden haber lev
     # downloading and installing security updates -> paciencia
     # install complete -> reboot now
     # Please remove the intallation medium, then press ENTER -> enter
- 
     
     
 ### Ajustes
@@ -98,6 +97,7 @@ Si en lugar de Ubuntu 22.04 se está instalando Ubuntu 22.04.x, pueden haber lev
 
     # De este momento en más, cada vez que inicie, tras el login, para obtener el entorno gráfico:
     startx
+    # Si falla, puede ser por falta de espacio, ver luego lo de espacio libre
     # Botón derecho sobre el fondo abre el menú
     # Para apagar, si se está en el entorno gráfico, cerrarlo con botón derecho, "Exit"
     shutdown -h now
@@ -138,6 +138,7 @@ Por algún motivo que ignoro, la instalación no usa todo el espacio disponible,
 ### Código referencia
 
      # hacer fork del proyecto https://github.com/cpantel/ceiot_base.git a tu repo
+     # Es el botón de arriba a la derecha, "Fork", dejar mismo nombre y opciones, "Create Fork"
      mkdir ~/esp
      cd ~/esp    
      git clone git@github.com:xxxx/ceiot_base.git
@@ -167,21 +168,24 @@ Por algún motivo que ignoro, la instalación no usa todo el espacio disponible,
 
     cd ~/esp/ceiot_base/api
     npm install; # express body-parser mongodb pg-mem
+    
+### Imagen docker de mongo    
+
+    docker pull mongo:4.0.4
 
 ### Pruebas
 
 En una terminal mongodb:
 
-    # Por única vez
-    docker pull mongo:4.0.4
-    # Cada vez que haga falta
+    cd ~/esp/ceiot_base
     docker run  -p 27017:27017 mongo:4.0.4
-    # con ^C se cierra
+    # con ^C se puede cerrar al terminar
 
 En una terminal servidor API:
 
     cd ~/esp/ceiot_base/api
     node index.js
+    # con ^C se puede cerrar al terminar
     
 Esperamos:
 
@@ -193,6 +197,7 @@ En otra terminal, servidor SPA:
 
     cd ~/esp/ceiot_base/api/spa
     ./rebuild.sh
+    # con ^C se puede cerrar al terminar
     
 Esperamos:
 
@@ -204,13 +209,12 @@ Cliente, en otra terminal:
     cd ~/esp/ceiot_base/tools
     ./get_color_device.sh 00
     
-Esperamos (observar que la invocación no es exactamente la misma, lo que importa es el resultado):
+Esperamos (observar que la invocación no es exactamente la misma y los valores del resultado pueden variar, lo que importa es la forma):
     
 ![](./img/API_color.png)
 
 
 En un navegador, probar las siguientes URLs:
-
 
     SPA: http://localhost:8080/index.html -> lista de dispositivos con un botón de refrescar
 
@@ -220,9 +224,13 @@ En un navegador, probar las siguientes URLs:
     
 ![](./img/WEB_device.png)
     
-    API: http://localhost:8080/device -> lista dispositivos JSON
+    API devices: http://localhost:8080/device -> lista dispositivos JSON
 
 ![](./img/API_device.png)
+
+    API measurement: http://localhost:8080/measurement -> lista mediciones JSON
+
+![](./img/API_measurement.png)
 
 ## Paso 4: Entorno ESP-IDF para ESP32/ESP32s2/ESP32c3
 
@@ -260,7 +268,7 @@ Relato informal de la experiencia de exploración:
 
 Para comprobar, ejecutar:
 
-    dmesg | tail -20
+    sudo dmesg | tail -20
 
 Esperamos algo parecido a:
 
