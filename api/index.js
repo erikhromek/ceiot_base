@@ -177,10 +177,10 @@ app.get('/admin/:command', function(req,res) {
 
 
 startDatabase().then(async() => {
-    await insertMeasurement({id:'00', t:'18', h:'78', datetime: new date(), key: "example"});
-    await insertMeasurement({id:'00', t:'19', h:'77', datetime: new date(), key: "example"});
-    await insertMeasurement({id:'00', t:'17', h:'77', datetime: new date(), key: "example"});
-    await insertMeasurement({id:'01', t:'17', h:'77', datetime: new date(), key: "example"});
+    await insertMeasurement({id:'00', t:'18', h:'78', datetime: new Date(), key: "example"});
+    await insertMeasurement({id:'00', t:'19', h:'77', datetime: new Date(), key: "example"});
+    await insertMeasurement({id:'00', t:'17', h:'77', datetime: new Date(), key: "example"});
+    await insertMeasurement({id:'01', t:'17', h:'77', datetime: new Date(), key: "example"});
     console.log("mongo measurement database Up");
 
     db.public.none("CREATE TABLE devices (device_id VARCHAR, name VARCHAR, key VARCHAR)");
