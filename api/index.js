@@ -42,10 +42,17 @@ app.use('/js', express.static('spa'));
 const PORT = 8080;
 
 app.post('/measurement', function (req, res) {
--       console.log("device id    : " + req.body.id + " key         : " + req.body.key + " temperature : " + req.body.t + " humidity    : " + req.body.h);	
+    console.log("device id    : " + req.body.id + " key         : " + req.body.key + " temperature : " + req.body.t + " humidity    : " + req.body.h);	
     const {insertedId} = insertMeasurement({key: req.body.key, id:req.body.id, t:req.body.t, h:req.body.h, datetime: new Date()});
 	res.send("received measurement into " +  insertedId);
 });
+
+app.post('/measurement.json', function (req, res) {
+    const data = JSON.parse(body);
+    console.log(data);	
+    const {insertedId} = insertMeasurement({key: data.key, id:data.id, t:data.t, h:data.h, datetime: new Date()});
+    res.send("received json measurement into " +  insertedId);
+    });
 
 app.post('/device', function (req, res) {
 	console.log("device id    : " + req.body.id + " name        : " + req.body.n + " key         : " + req.body.k );
