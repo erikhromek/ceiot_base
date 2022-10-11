@@ -56,6 +56,7 @@ app.post('/measurement.json', function (req, res) {
 
     db.any("select device_id from devices where device_id = $1 and key = $2", [data.id, data.key])
     .then(function(result) {
+        console.log(result);
         if (result.length > 0) {
             const {insertedId} = insertMeasurement({key: data.key, id:data.id, t:data.t, h:data.h, datetime: new Date()});
             res.send("received json measurement into " +  insertedId);
