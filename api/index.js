@@ -193,12 +193,7 @@ startDatabase().then(async() => {
     await insertMeasurement({id:'01', t:'17', h:'77', datetime: new Date(), key: "example"});
     console.log("mongo measurement database Up");
 
-    db.public.none("CREATE TABLE devices (device_id VARCHAR, name VARCHAR, key VARCHAR)");
-    db.public.none("INSERT INTO devices VALUES ('00', 'Fake Device 00', '123456')");
-    db.public.none("INSERT INTO devices VALUES ('01', 'Fake Device 01', '234567')");
-    db.public.none("CREATE TABLE users (user_id VARCHAR, name VARCHAR, key VARCHAR)");
-    db.public.none("INSERT INTO users VALUES ('1','Ana','admin123')");
-    db.public.none("INSERT INTO users VALUES ('2','Beto','user123')");
+    db.public.many("SELECT 1;");
 
     console.log("sql device database up");
 
