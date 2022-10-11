@@ -82,7 +82,7 @@ Si en lugar de Ubuntu 22.04 se está instalando Ubuntu 22.04.x, pueden haber lev
 
     # Es conveniente esperar unos minutos a que terminen de aparecer  los mensajes restantes antes de seguir.
     # hacer login
-    sudo apt install xorg openbox firefox gcc make bzip2 
+    sudo apt install xorg openbox firefox gcc make bzip2 postgresql-client-common postgresql-client
     # En el menú de VirtualBox asociado a la instancia actual
     # Devices -> Insert guest additions CD image...
     sudo mount /dev/cdrom /mnt
@@ -180,6 +180,12 @@ En una terminal mongodb:
     cd ~/esp/ceiot_base
     docker run  -p 27017:27017 mongo:4.0.4
     # con ^C se puede cerrar al terminar
+
+En una terminal (postgres):
+
+    docker run --name postgres-iot -d -p 5432:5432 -e POSTGRES_PASSWORD=1234 postgres:alpine
+
+Reemplazar "1234" con una password para el admin de PostgreSQL
 
 En una terminal servidor API:
 
