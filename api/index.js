@@ -52,9 +52,26 @@ app.post('/measurement', function (req, res) {
 
 app.post('/measurement.json', function (req, res) {
     const data = req.body;
-    console.log(data);	
-    const {insertedId} = insertMeasurement({key: data.key, id:data.id, t:data.t, h:data.h, datetime: new Date()});
-    res.send("received json measurement into " +  insertedId);
+    console.log(data);
+
+    db.any("select device_id from devices where device_id = $1 and key = $2", [data.id, data.key])
+    .then(function(result) {
+        if (result.length > 0) {
+            const {insertedId} = insertMeasurement({key: data.key, id:data.id, t:data.t, h:data.h, datetime: new Date()});
+            res.send("received json measurement into " +  insertedId);
+        }
+        else {
+            res.status(403);
+            res.send("No se encontró device_id con tal clave");
+        }
+    })
+    .catch(function(error) {
+        res.status(500);
+        res.send("Error interno al buscar datos");
+    });
+
+
+
     });
 
 app.post('/device', function (req, res) {
