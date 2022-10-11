@@ -154,7 +154,7 @@ Por algún motivo que ignoro, la instalación no usa todo el espacio disponible,
      git commit -m "prueba"
      git push
 
-## Paso 3: API/SPA
+## Paso 3.1: API/SPA
 
 ### Instalación node + typescript
 
@@ -173,19 +173,47 @@ Por algún motivo que ignoro, la instalación no usa todo el espacio disponible,
 
     docker pull mongo:4.0.4
 
-### Pruebas
-
-En una terminal mongodb:
-
-    cd ~/esp/ceiot_base
-    docker run  -p 27017:27017 mongo:4.0.4
-    # con ^C se puede cerrar al terminar
+## Paso 3.1: Database setup
 
 En una terminal (postgres):
 
     docker run --name postgres-iot -d -p 5432:5432 -e POSTGRES_PASSWORD=1234 postgres:alpine
 
 Reemplazar "1234" con una password para el admin de PostgreSQL
+
+Conectarse a insertar datos:
+
+    psql -h 127.0.0.1 -p 5432 -U postgres -W
+    (ingresar password de postgres)
+
+    postgres=#
+
+Correr consultas SQL (archivo api/migrations/1.0.0.sql para construir la DB):
+
+    CREATE TABLE devices (device_id VARCHAR, name VARCHAR, key VARCHAR);
+
+    -- Insert de datos de ejemplo
+    INSERT INTO devices VALUES ('00', 'Fake Device 00', '123456');
+    INSERT INTO devices VALUES ('01', 'Fake Device 01', '234567');
+    CREATE TABLE users (user_id VARCHAR, name VARCHAR, key VARCHAR);
+    INSERT INTO users VALUES ('1','Ana','admin123');
+    INSERT INTO users VALUES ('2','Beto','user123');
+
+
+### Pruebas
+
+Clonar y configurar variables de entorno:
+
+    cd ~/esp/ceiot_base/api
+    cp .env.template .env
+
+Configurar los parámetros con los datos de la DB (generalmente 127.0.0.1, puerto 5432, database postgres).
+
+
+En una terminal mongodb:
+
+    cd ~/esp/ceiot_base
+    docker run  --name mongodb-iot -d -p 27017:27017 mongo:4.0.4
 
 En una terminal servidor API:
 

@@ -2,9 +2,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 //const {MongoMemoryServer} = require("mongodb-memory-server");
 const {MongoClient} = require("mongodb");
-const PgMem = require("pg-mem");
+//const PgMem = require("pg-mem");
+const pgp = require('pg-promise')(/* options */)
+require('dotenv').config({path: './.env'});
 
-const db = PgMem.newDb();
+const db = pgp('postgres://' + process.env.DB_USER + ':'+ process.env.DB_PASSWORD +'@' + process.env.DB_HOST +':' + process.env.DB_PORT + '/' + process.env.DB_NAME);
 
 const fs = require('fs');
 
