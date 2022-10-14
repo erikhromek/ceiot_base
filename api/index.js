@@ -84,21 +84,38 @@ app.post('/device', function (req, res) {
 
 
 app.get('/web/device', function (req, res) {
-	var devices = db.many("SELECT * FROM devices").map( function(device) {
-		console.log(device);
-		return '<tr><td><a href=/web/device/'+ device.device_id +'>' + device.device_id + "</a>" +
-			       "</td><td>"+ device.name+"</td><td>"+ device.key+"</td></tr>";
-	   }
-	);
-	res.send("<html>"+
-		     "<head><title>Sensores</title></head>" +
-		     "<body>" +
-		        "<table border=\"1\">" +
-		           "<tr><th>id</th><th>name</th><th>key</th></tr>" +
-		           devices +
-		        "</table>" +
-		     "</body>" +
-		"</html>");
+	db.many("SELECT * FROM devices").then(
+
+        function(data){
+
+            data.map( function(device) {
+                console.log(device);
+                return '<tr><td><a href=/web/device/'+ device.device_id +'>' + device.device_id + "</a>" +
+                           "</td><td>"+ device.name+"</td><td>"+ device.key+"</td></tr>";
+               }
+            );
+            res.send("<html>"+
+                     "<head><title>Sensores</title></head>" +
+                     "<body>" +
+                        "<table border=\"1\">" +
+                           "<tr><th>id</th><th>name</th><th>key</th></tr>" +
+                           devices +
+                        "</table>" +
+                     "</body>" +
+                "</html>");
+
+            
+        }
+
+
+
+
+    );
+
+    
+    
+    
+    
 });
 
 /*
