@@ -69,35 +69,23 @@ app.get('/web/device', function (req, res) {
 	db.many("SELECT * FROM devices").then(
 
         function(data){
-
-            data.map( function(device) {
-                console.log(device);
-                return '<tr><td><a href=/web/device/'+ device.device_id +'>' + device.device_id + "</a>" +
-                           "</td><td>"+ device.name+"</td><td>"+ device.key+"</td></tr>";
-               }
-            );
-            res.send("<html>"+
+	var devices = data;
+	var result = "";
+	for (let i=0; i< devices.length;i++) {
+		result = result + '<tr><td><a href=/web/device/'+ devices[i].device_id +'>' + devices[i].device_id + "</a>" +
+                           "</td><td>"+ devices[i].name+"</td><td>"+ devices[i].key+"</td></tr>";
+	}
+	res.send("<html>"+
                      "<head><title>Sensores</title></head>" +
                      "<body>" +
                         "<table border=\"1\">" +
                            "<tr><th>id</th><th>name</th><th>key</th></tr>" +
-                           devices +
+                           result +
                         "</table>" +
                      "</body>" +
                 "</html>");
-
-            
         }
-
-
-
-
     );
-
-    
-    
-    
-    
 });
 
 /*
@@ -131,11 +119,10 @@ app.get('/web/device/:id', function (req,res) {
 		        "Key : {{ key }}" +
                      "</body>" +
                 "</html>";
-
-
-    var device = db.many("SELECT * FROM devices WHERE device_id = '"+req.params.id+"'");
-    console.log(device);
-    res.send(render(template,{id:device[0].device_id, key: device[0].key, name:device[0].name}));
+    var device = db.many("SELECT * FROM devices WHERE device_id = '"+req.params.id+"'").then(
+	function(device) {
+            res.send(render(template,{id:device[0].device_id, key: device[0].key, name:device[0].name}));
+	});
 });	
 
 
@@ -147,9 +134,11 @@ app.get('/term/device/:id', function (req, res) {
     var template = "Device name " + red   + "   {{name}}" + reset + "\n" +
 		   "       id   " + green + "       {{ id }} " + reset +"\n" +
 	           "       key  " + blue  + "  {{ key }}" + reset +"\n";
-    var device = db.many("SELECT * FROM devices WHERE device_id = '"+req.params.id+"'");
-    console.log(device);
-    res.send(render(template,{id:device[0].device_id, key: device[0].key, name:device[0].name}));
+    db.many("SELECT * FROM devices WHERE device_id = '"+req.params.id+"'").then(
+        function(device){
+            res.send(render(template,{id:device[0].device_id, key: device[0].key, name:device[0].name}));
+        }
+    );
 });
 
 app.get('/measurement', async (req,res) => {
@@ -157,7 +146,9 @@ app.get('/measurement', async (req,res) => {
 });
 
 app.get('/device', function(req,res) {
-    res.send( db.many("SELECT * FROM devices") );
+	db.many("select * from devices").then(function(data){
+		res.send(data);
+	});
 });
 
 app.get('/admin/:command', function(req,res) {
@@ -210,9 +201,10 @@ startDatabase().then(async() => {
     await insertMeasurement({id:'01', t:'17', h:'77', datetime: new Date(), key: "example"});
     console.log("mongo measurement database Up");
 
-    db.many("SELECT 1;");
+    db.many("SELECT 1;").then(function(data){
+        console.log("sql device database up");
+    });
 
-    console.log("sql device database up");
 
     app.listen(PORT, () => {
         console.log(`Listening at ${PORT}`);
