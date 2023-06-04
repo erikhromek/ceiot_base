@@ -1,6 +1,5 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-//const {MongoMemoryServer} = require("mongodb-memory-server");
 const {MongoClient} = require("mongodb");
 //const PgMem = require("pg-mem");
 const pgp = require('pg-promise')(/* options */)
@@ -8,13 +7,13 @@ require('dotenv').config({path: './.env'});
 
 const db = pgp('postgres://' + process.env.DB_USER + ':'+ process.env.DB_PASSWORD +'@' + process.env.DB_HOST +':' + process.env.DB_PORT + '/' + process.env.DB_NAME);
 
-const fs = require('fs');
+    const render = require("./render.js");
+// Measurements database setup and access
 
 let database = null;
 const collectionName = "measurements";
 
 async function startDatabase() {
-//    const mongod = await MongoMemoryServer.create();
     const uri = "mongodb://localhost:27017/?maxPoolSize=20&w=majority";	
     const connection = await MongoClient.connect(uri, {useNewUrlParser: true});
     database = connection.db();
@@ -34,13 +33,14 @@ async function getMeasurements() {
     return await database.collection(collectionName).find({}).toArray();	
 }
 
+// API Server
+
 const app = express();
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.json());
 
-app.use(express.static('spa'));
-app.use('/js', express.static('spa'));
+app.use(express.static('spa/static'));
 
 const PORT = 8080;
 
@@ -101,28 +101,6 @@ app.get('/web/device', function (req, res) {
     );
 });
 
-/*
- * Canibalized from
- *    https://www.npmjs.com/package/sprightly
- *    https://github.com/obadakhalili/Sprightly/blob/main/index.js
- */
-function render(template, vars) {
-   const regexp = /<<(.*?)>>|\{\{(.*?)\}\}/;
-   return template.split('\n').map( function(line) {
-       for (let match = line.match(regexp), result; match;) {
-	   if (match[0][0] === '<') {
-		   console.log("match <");
-	   } else {
-	      result = vars[match[2].trim()];
-
-	   }
-           line = line.replace(match[0], result ? result : '');
-	   match = line.match(regexp);
-       }	       
-       return line;
-   }).join('\n');	
-}
-
 app.get('/web/device/:id', function (req,res) {
     var template = "<html>"+
                      "<head><title>Sensor {{name}}</title></head>" +
@@ -163,49 +141,6 @@ app.get('/device', function(req,res) {
 		res.send(data);
 	});
 });
-
-app.get('/admin/:command', function(req,res) {
-    var msg="done";
-    switch (req.params.command) {
-       case "clear":
-         if (req.query.db == "mongo") {
-           msg = "clearing mongo";
-           /* UNIMPLEMENTED */
-	 } else if (req.query.db == "psql") {
-           msg = "clearing psql";
-           /* UNIMPLEMENTED */
-	 } else {
-           msg = "unknown db " + req.query.db;
-         }
-       break;
-       case "save":
-         if (req.query.db == "mongo") {
-           msg = "saving mongo to " + req.query.file;
-           /* UNIMPLEMENTED */
-	 } else if (req.query.db == "psql") {
-           msg = "saving psql " + req.query.file;
-           /* UNIMPLEMENTED */
-	 } else {
-           msg = "unknown db " + req.query.db;
-         }
-       break;
-       case "show":
-         msg = fs.readFileSync("../fixtures/" + req.query.file);
-       break;
- 
-       break;
-       default:
-         msg="Command: " + req.params.command + " not implemented"
-    }
-    var template = "<html>"+
-                     "<head><title>Admin</title></head>" +
-                     "<body>" +
-                        "{{ msg }}"+
-                     "</body>" +
-                "</html>";
-    res.send(render(template,{msg:msg}));
-});	
-
 
 startDatabase().then(async() => {
     await insertMeasurement({id:'00', t:'18', h:'78', datetime: new Date(), key: "example"});
