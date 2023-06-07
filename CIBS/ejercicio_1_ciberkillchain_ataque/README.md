@@ -61,7 +61,7 @@ Se buscará información disponible públicamente sobre (siguiendo las 4 técnic
 El servicio web se utilizará para generar una login igual al de la plataforma. Se disponibilizará mediante un dominio contratado que sea casi igual al original. El dominio será contratado mediante algún servicio que provea enmascaramiento para ocultar las identidades del encargado del ataque. Se crearán cuentas falsas de mailing para enviar correos con el objetivo de engañar a los usuarios legítimos.
 
 3. Delivery (envío de los recursos creados a la víctima para intentar acceder al sistema):
-- [T1566 - Phishing] (https://attack.mitre.org/techniques/T1566/)
+- [T1566 - Phishing](https://attack.mitre.org/techniques/T1566/)
 
 El método ideal es generar un correo mostrando nuevas funcionalidades, un nuevo release de la plataforma, e invitando a ver las nuevas funcionalidades. 
 Se puede realizar el correo siguiendo la misma estética y formato de la empresa legítima, en base a la investigación previa del producto.
