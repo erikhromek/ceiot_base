@@ -74,6 +74,8 @@ Se puede realizar el correo siguiendo la misma estética y formato de la empresa
 
 - [T1651 - Cloud Administration Command](https://attack.mitre.org/techniques/T1651/): Se accederá con el usuario administrador obtenido, y se tomará control de la plataforma
 
+**Nota**: técnicamente no habría ningún paso correspondiente a la "instalación" del ataque como tal, en este caso, por eso pasamos al siguiente paso de la cadena.
+
 6. Command & Control (establecer medio para controlar al sistema):
 
 Se duplicarán usuarios, se creará otro usuario administrador con los permisos necesarios para utilizar la aplicación, sin tener que tocar el usuario original.
