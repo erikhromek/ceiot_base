@@ -41,49 +41,43 @@ Debe entenderse que muchas de estas acciones no son fáciles de detectar, ya que
 
 Podemos aplicar del lado de la plataforma web los siguientes mecanismos para atender a tiempo estos eventos (detectarlos y mitigarlos):
 
+- [DS0002 - User Account Modification](https://attack.mitre.org/datasources/DS0002/): **detección** de modificación de usuarios
+- [DS0002 - User Account Deletion](https://attack.mitre.org/datasources/DS0002/): **detección** de cambios/eliminación de usuarios
+- [DS0029 - Network Traffic Flow](https://attack.mitre.org/datasources/DS0029/): **detección** de tráfico por fuera de los orígenes "normales"
+- [M1053 - Data Backup](https://attack.mitre.org/mitigations/M1053/)
 
-- DS0002 - User Account Modification: deteccion
-- DS0002 - User Account Deletion: deteccion
- 	- DS0029 Network Traffic Flow
-- M1053 	Data Backup 
-
-La única medida que podemos proporcionar aquí, es asegurarnos de tener backups, y aplicar medidas de detección como las listas.
-
-
+La única medida que podemos proporcionar aquí, es asegurarnos de tener backups, y aplicar medidas de detección como las listadas anteriormente. No es fácil mitigar estas acciones en esta instancia, ya que son _features_ de la plataforma web.
 
 6. Command & Control (establecer medio para controlar al sistema):
 
 Anteriormente se detectó que hay un acceso de un intruso al sistema, por lo que el método más "barato" y rápido de implementar, es el siguiente:
 
--- Network Traffic Flow (DS0029): detección, rápidamente se detectaría un acceso desde una dirección/región desconocida, que no coincide con la del centro de monitoreo del cliente (https://attack.mitre.org/datasources/DS0029/#Network%20Traffic%20Flow)
+- [DS0029 - Network Traffic Flow](https://attack.mitre.org/datasources/DS0029/): **detección**, rápidamente se detectaría un acceso desde una dirección/región desconocida, que no coincide con la del centro de monitoreo del cliente
+- M1037 - Filter Network Traffic (https://attack.mitre.org/mitigations/M1037/): medida de **mitigación**
 
-- M1037 - Filter Network Traffic (https://attack.mitre.org/mitigations/M1037/): mitigacion
-
-Medida escogida (dada la limitación de recursos para implementar _features_ asociadas a auditoría, seguridad): limitación de accesos, a una serie de direcciones IPs conocidas por el centro de monitoreo del cliente. 
-La unica desventaja que NO nos da proteccion, es si se acceden por dentro de la red del centro de monitoreo, pero consideramos que tal red está correctamente asegurada por el área de sistemas del cliente.
-
+ Medida escogida (dada la limitación de recursos para implementar _features_ asociadas a auditoría, seguridad): limitación de accesos, a una serie de direcciones IPs conocidas por el centro de monitoreo del cliente. 
+La única desventaja que NO nos da protección, es si se acceden por dentro de la red del centro de monitoreo, pero consideramos que tal red está correctamente asegurada por el área de sistemas del cliente.
 
 5. Installation (ejecución del ataque):
 
 Sobre este punto, no tenemos ninguna actividad adicional (ver TP de ataque) ya que una vez que el atacante accede al sistema con el usuario de administrador, ya está "instalado":
 
-- M1026 	Privileged Account Management. Podría aplicar, pero eso hace referencia a limitar los accesos a usuarios privilegios a nivel SERVIDOR/INFRA; en este caso nos referimos a usuarios de la APLICACION, por lo que el equivalente sería "principio de menor privilegio": NO dar este tipo de permisos a los usuarios del cliente, no importa si tiene un usuario administrador (ver paso siguiente)
+- [M1026 - Privileged Account Management](https://attack.mitre.org/mitigations/M1026/): Podría aplicar, pero eso hace referencia a limitar los accesos a usuarios privilegios a nivel SERVIDOR/INFRA; en este caso nos referimos a usuarios de la APLICACION, por lo que el equivalente sería "principio de menor privilegio": NO dar este tipo de permisos a los usuarios del cliente, no importa si tiene un usuario administrador (en el próximo paso se verá más con detalle esto)
 
 4. Exploitation (acceso inicial al sistema):
 
-El objetivo aquí es impedir que, desde un usuario de un cliente, se puedan ejecutar acciones que comprometan el uso correcto del sistema. Tenemos varias alternativas para agregar un "paso adicional" al momento de ejecutar alguna acción sensible:
+El objetivo aquí es impedir que desde un usuario de un cliente se puedan ejecutar acciones que comprometan el uso correcto del sistema. Tenemos varias alternativas para agregar un "paso adicional" al momento de ejecutar alguna acción sensible:
 
-- M1018 	User Account Management
-- M1032 	Multi-factor Authentication 
--  M1036 	Account Use Policies 
-- M1026 	Privileged Account Management 
-- M1017 	User Training 
+- [M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018/) y [M1026 - Privileged Account Management](https://attack.mitre.org/mitigations/M1026/)
+- [M1032 - Multi-factor Authentication](https://attack.mitre.org/mitigations/M1032/): obligar a usar un dispositivo 2FA
+-  [M1036 - Account Use Policies](https://attack.mitre.org/mitigations/M1036/)
+- [M1017 - User Training](https://attack.mitre.org/mitigations/M1017/)
 
-Aquí se repite la acción más valiosa (a nuestro criterio) del paso anterior. Creo que la política más rápida de implementar y con mayor valor agregado (siguiendo con la restricción de recursos) es la de  M1036 	Account Use Policies y podría ser también  M1026 	Privileged Account Management  (considero que todas son valiosas y de implementarse, podrían dotar al sistema de muchas "capas" necesarias para romper por parte de un atacante)..
+Aquí se repite la acción más valiosa (a nuestro criterio) del paso anterior. Creo que la política más rápida de implementar y con mayor valor agregado (siguiendo con la restricción de recursos) es la de  [1036 - Account Use Policies](https://attack.mitre.org/mitigations/M1036/) y podría ser también [M1026 - Privileged Account Management](https://attack.mitre.org/mitigations/M1026/)  (considero que todas son valiosas y de implementarse, podrían dotar al sistema de muchas "capas" necesarias para romper por parte de un atacante). No descartamos también la implementación de [M1032 - Multi-factor Authentication](https://attack.mitre.org/mitigations/M1032/) por el valor agregado que aporta con respecto a la segurización.
 
 3. Delivery (envío de los recursos creados a la víctima para intentar acceder al sistema):
 
-En este caso, el método para engañar al usuario y obtener las credenciales legítimas, es mediante correo haciendose pasa por la empresa. La única medida que puede "mitigar" (y no completamente, por eso consideramos que las actividades del paso de Exploitation darían solidez al sistema) sería la de M1017 	User Training para capacitar a los clientes, y explicar cuales son las comunicaciones **oficiales** de la empresa proveedora del servicio.
+En este caso, el método para engañar al usuario y obtener las credenciales legítimas, es mediante correo haciendose pasa por la empresa. La única medida que puede "mitigar" (y no completamente, por eso consideramos que las actividades del paso de Exploitation darían solidez al sistema) sería la de [M1017 - User Training](https://attack.mitre.org/mitigations/M1017/) para capacitar a los clientes, y explicar cuales son las comunicaciones **oficiales** de la empresa proveedora del servicio.
 
 2. Weaponization (juntar toda la información para preparar el ataque, y conseguir los recursos necesarios para llevar a cabo el plan):
 
@@ -91,12 +85,12 @@ Para este caso, consideramos que no se puede impedir la creación y aprovisionam
 
 1. Reconnaissance (obtener información que servirá para planes futuros)
 
-La única forma de saber **qué** información está disponible publicamente sobre los empleados, usuarios de la aplicación, información sobre la empresa y sus comunicaciones, manuales de la empresa, etc. es investigando en Internet, de la misma forma que lo haría el atacante, y actuar en consonancia para prevenir "ataques" sobre los **objetivos** (usuario legítimos).
+La única forma de saber **qué** información está disponible públicamente sobre los empleados, usuarios de la aplicación, información sobre la empresa y sus comunicaciones, manuales de la empresa, etc. es investigando en Internet, de la misma forma que lo haría el atacante, y actuar en consonancia para prevenir "ataques" sobre los **objetivos** (usuario legítimos).
 
-DS0035 - https://attack.mitre.org/datasources/DS0035/
-M1056 	Pre-compromise (hhttps://attack.mitre.org/mitigations/M1056/)
+- [DS0035 - Internet Scan](https://attack.mitre.org/datasources/DS0035/): revisar qué información hay disponible de antemano (es la única actividad posible aquí)
+- [M1056 - Pre-compromise](https://attack.mitre.org/mitigations/M1056/): prácticamente todas las actividades de reconocimiento no son "mitigables" como las actividades anteriores.
 
-Solo podemos tomar acciones **preventivas*.
+**Nota final**: Solo podemos tomar acciones **preventivas**.
 
 
 
